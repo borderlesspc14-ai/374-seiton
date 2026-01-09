@@ -15,6 +15,12 @@ export default function Login() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    
+    if (!auth) {
+      setError("Firebase não está configurado. Por favor, configure as variáveis de ambiente.");
+      return;
+    }
+
     try {
       if (isLogin) {
         await signInWithEmailAndPassword(auth, email, password);

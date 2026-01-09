@@ -39,7 +39,7 @@ export default function Planner() {
   const [userPoints, setUserPoints] = useState(0);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !db) return;
 
     // Listen for tasks
     const q = query(
@@ -97,6 +97,11 @@ export default function Planner() {
         return;
       }
 
+      if (!db) {
+        toast.error("Firebase não está configurado");
+        return;
+      }
+
       await addDoc(collection(db, "tasks"), {
         title: newTask,
         completed: false,
@@ -115,7 +120,7 @@ export default function Planner() {
   };
 
   const toggleTask = async (task: Task) => {
-    if (!user) return;
+    if (!user || !db) return;
 
     try {
       const taskRef = doc(db, "tasks", task.id);

@@ -99,6 +99,11 @@ export default function Rewards() {
 
     loadProfile();
 
+    if (!db) {
+      console.warn("Firebase não está configurado");
+      return;
+    }
+
     // Listen for user profile changes
     const profileRef = doc(db, "userProfiles", user.uid);
     const unsubscribeProfile = onSnapshot(profileRef, (snapshot) => {

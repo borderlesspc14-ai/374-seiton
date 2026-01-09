@@ -37,7 +37,7 @@ export default function AnotaChef() {
   const [newItem, setNewItem] = useState({ name: '', quantity: '', unit: 'kg', minQuantity: '' });
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !db) return;
 
     const qTransactions = query(collection(db, "transactions"), where("userId", "==", user.uid));
     const qInventory = query(collection(db, "inventory"), where("userId", "==", user.uid));
@@ -61,7 +61,7 @@ export default function AnotaChef() {
   }, [user]);
 
   const handleAddTransaction = async () => {
-    if (!user || !newTransaction.amount || !newTransaction.description) return;
+    if (!user || !newTransaction.amount || !newTransaction.description || !db) return;
     await addDoc(collection(db, "transactions"), {
       ...newTransaction,
       amount: Number(newTransaction.amount),
@@ -73,7 +73,7 @@ export default function AnotaChef() {
   };
 
   const handleAddItem = async () => {
-    if (!user || !newItem.name || !newItem.quantity) return;
+    if (!user || !newItem.name || !newItem.quantity || !db) return;
     await addDoc(collection(db, "inventory"), {
       ...newItem,
       quantity: Number(newItem.quantity),

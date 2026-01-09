@@ -67,6 +67,11 @@ export default function Settings() {
 
     loadProfile();
 
+    if (!db) {
+      console.warn("Firebase não está configurado");
+      return;
+    }
+
     const profileRef = doc(db, "userProfiles", user.uid);
     const unsubscribe = onSnapshot(profileRef, (snapshot) => {
       if (snapshot.exists()) {

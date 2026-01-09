@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !db) return;
 
     const loadProfile = async () => {
       try {
@@ -44,7 +44,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     ? PLANS.find(p => p.id === userProfile.subscriptionPlan)?.name || "Básico"
     : "Básico";
 
-  const handleLogout = () => signOut(auth);
+  const handleLogout = () => {
+    if (auth) {
+      signOut(auth);
+    } else {
+      console.warn("Firebase Auth não está configurado");
+    }
+  };
 
   const navItems = [
     { icon: LayoutDashboard, label: "Visão Geral", path: "/dashboard" },

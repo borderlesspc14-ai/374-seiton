@@ -38,7 +38,8 @@ export interface UserProfile {
  * Inicializa ou obtém o perfil do usuário
  */
 export async function getUserProfile(userId: string): Promise<UserProfile> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   const profileSnap = await getDoc(profileRef);
 
   if (profileSnap.exists()) {
@@ -80,13 +81,24 @@ export async function getUserProfile(userId: string): Promise<UserProfile> {
 }
 
 /**
+ * Verifica se o Firebase está configurado
+ */
+function ensureDb() {
+  if (!db) {
+    throw new Error("Firebase não está configurado. Configure as variáveis de ambiente.");
+  }
+  return db;
+}
+
+/**
  * Adiciona pontos ao perfil do usuário
  */
 export async function addPointsToProfile(
   userId: string,
   points: number
 ): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   
   // Garante que o perfil existe e busca o estado mais atualizado
   let profileSnap = await getDoc(profileRef);
@@ -116,7 +128,8 @@ export async function removePointsFromProfile(
   userId: string,
   points: number
 ): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   
   const profile = await getDoc(profileRef);
   const currentPoints = profile.data()!.totalPoints;
@@ -134,7 +147,8 @@ export async function removePointsFromProfile(
  * Incrementa o contador de tarefas completadas
  */
 export async function incrementCompletedTasks(userId: string): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   
   await getUserProfile(userId);
   
@@ -148,7 +162,8 @@ export async function incrementCompletedTasks(userId: string): Promise<void> {
  * Decrementa o contador de tarefas completadas
  */
 export async function decrementCompletedTasks(userId: string): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   
   await updateDoc(profileRef, {
     completedTasks: increment(-1),
@@ -160,7 +175,8 @@ export async function decrementCompletedTasks(userId: string): Promise<void> {
  * Atualiza o streak do usuário
  */
 export async function updateStreak(userId: string, taskDate: Date): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   const profileSnap = await getDoc(profileRef);
   
   if (!profileSnap.exists()) {
@@ -225,7 +241,8 @@ export async function unlockAchievement(
   userId: string,
   achievementId: string
 ): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   const profileSnap = await getDoc(profileRef);
 
   if (!profileSnap.exists()) {
@@ -260,7 +277,8 @@ export async function checkAndUnlockAchievements(
   ];
 
   const newlyUnlocked: string[] = [];
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   const profileSnap = await getDoc(profileRef);
   
   if (!profileSnap.exists()) {
@@ -316,7 +334,8 @@ export async function updateSubscriptionPlan(
   plan: 'basic' | 'premium',
   months: number = 1
 ): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   
   await getUserProfile(userId);
   
@@ -387,7 +406,8 @@ export async function updateUserProfileData(
     zipCode?: string;
   }
 ): Promise<void> {
-  const profileRef = doc(db, "userProfiles", userId);
+  const dbInstance = ensureDb();
+  const profileRef = doc(dbInstance, "userProfiles", userId);
   
   await getUserProfile(userId);
   
@@ -413,6 +433,10 @@ export async function updateUserEmail(
 ): Promise<void> {
   const { updateEmail } = await import("firebase/auth");
   const { auth } = await import("./firebase");
+  
+  if (!auth) {
+    throw new Error("Firebase não está configurado");
+  }
   
   if (!auth.currentUser) {
     throw new Error("Usuário não autenticado");
