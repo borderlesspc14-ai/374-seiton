@@ -17,27 +17,52 @@ Se ainda não instalou as dependências, execute:
 pnpm install
 ```
 
-### 2. Configurar variáveis de ambiente (Opcional)
+### 2. Configurar variáveis de ambiente
 
 O projeto usa Firebase para autenticação e banco de dados. Para funcionalidades completas, você precisa configurar as variáveis de ambiente.
+
+#### Para desenvolvimento local:
 
 Crie um arquivo `.env` na raiz do projeto (`seiton-platform/.env`) com as seguintes variáveis:
 
 ```env
+# Firebase Configuration (Obrigatório para autenticação e banco de dados)
 VITE_FIREBASE_API_KEY=sua_api_key_aqui
 VITE_FIREBASE_AUTH_DOMAIN=seu_project_id.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=seu_project_id
 VITE_FIREBASE_STORAGE_BUCKET=seu_project_id.appspot.com
 VITE_FIREBASE_MESSAGING_SENDER_ID=seu_messaging_sender_id
 VITE_FIREBASE_APP_ID=seu_app_id
+VITE_FIREBASE_MEASUREMENT_ID=seu_measurement_id
+
+# Analytics (Opcional - Umami)
+VITE_ANALYTICS_ENDPOINT=
+VITE_ANALYTICS_WEBSITE_ID=
+
+# OAuth Portal (Opcional)
+VITE_OAUTH_PORTAL_URL=
+VITE_APP_ID=
+
+# Map/Forge API (Opcional)
+VITE_FRONTEND_FORGE_API_KEY=
+VITE_FRONTEND_FORGE_API_URL=
 ```
 
-**Nota:** Você pode obter essas chaves no [Console do Firebase](https://console.firebase.google.com/):
+**Nota:** Você pode obter as chaves do Firebase no [Console do Firebase](https://console.firebase.google.com/):
 1. Acesse seu projeto no Firebase Console
 2. Vá em **Configurações do Projeto** > **Geral**
 3. Role até a seção **Seus aplicativos** e copie as configurações
 
-**Importante:** Se você não configurar o Firebase, o projeto ainda rodará, mas funcionalidades de autenticação e banco de dados não funcionarão.
+#### Para produção (Netlify):
+
+Configure as variáveis de ambiente no painel do Netlify:
+1. Acesse seu site no Netlify
+2. Vá em **Site settings** > **Environment variables**
+3. Adicione todas as variáveis `VITE_*` necessárias
+
+**Importante:** 
+- Se você não configurar o Firebase, o projeto ainda rodará, mas funcionalidades de autenticação e banco de dados não funcionarão.
+- Os avisos sobre Firebase não configurado aparecem apenas em desenvolvimento, não em produção.
 
 ### 3. Executar em modo de desenvolvimento
 

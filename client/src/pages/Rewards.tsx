@@ -100,7 +100,9 @@ export default function Rewards() {
     loadProfile();
 
     if (!db) {
-      console.warn("Firebase não está configurado");
+      if (import.meta.env.DEV) {
+        console.warn("Firebase não está configurado");
+      }
       return;
     }
 

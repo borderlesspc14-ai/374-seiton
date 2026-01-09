@@ -23,11 +23,23 @@ const isFirebaseConfigured =
   firebaseConfig.projectId && 
   firebaseConfig.apiKey && 
   firebaseConfig.projectId !== undefined &&
-  firebaseConfig.apiKey !== undefined;
+  firebaseConfig.apiKey !== undefined &&
+  firebaseConfig.projectId !== "" &&
+  firebaseConfig.apiKey !== "";
 
-if (!isFirebaseConfigured) {
+// Mostra avisos apenas em desenvolvimento
+const isDevelopment = import.meta.env.DEV;
+
+if (!isFirebaseConfigured && isDevelopment) {
   console.warn(
-    "⚠️ Firebase não está configurado. Configure as variáveis de ambiente VITE_FIREBASE_PROJECT_ID e VITE_FIREBASE_API_KEY no arquivo .env"
+    "⚠️ Firebase não está configurado.\n" +
+    "Configure as variáveis de ambiente no arquivo .env:\n" +
+    "- VITE_FIREBASE_PROJECT_ID\n" +
+    "- VITE_FIREBASE_API_KEY\n" +
+    "- VITE_FIREBASE_AUTH_DOMAIN\n" +
+    "- VITE_FIREBASE_STORAGE_BUCKET\n" +
+    "- VITE_FIREBASE_MESSAGING_SENDER_ID\n" +
+    "- VITE_FIREBASE_APP_ID"
   );
 }
 
@@ -46,7 +58,9 @@ if (isFirebaseConfigured) {
       try {
         analytics = getAnalytics(app);
       } catch (error) {
-        console.warn("Firebase Analytics não pôde ser inicializado:", error);
+        if (isDevelopment) {
+          console.warn("Firebase Analytics não pôde ser inicializado:", error);
+        }
       }
     }
     
@@ -55,8 +69,8 @@ if (isFirebaseConfigured) {
   } catch (error) {
     console.error("Erro ao inicializar Firebase:", error);
   }
-} else {
-  // Cria objetos mock para evitar erros em desenvolvimento
+} else if (isDevelopment) {
+  // Mostra aviso apenas em desenvolvimento
   console.warn("Firebase não inicializado. Funcionalidades de autenticação e banco de dados não estarão disponíveis.");
 }
 

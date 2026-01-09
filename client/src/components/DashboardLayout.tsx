@@ -48,7 +48,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     if (auth) {
       signOut(auth);
     } else {
-      console.warn("Firebase Auth não está configurado");
+      if (import.meta.env.DEV) {
+        console.warn("Firebase Auth não está configurado");
+      }
     }
   };
 

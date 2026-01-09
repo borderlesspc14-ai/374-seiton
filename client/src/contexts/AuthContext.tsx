@@ -19,7 +19,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!auth) {
-      console.warn("Firebase Auth não está configurado");
+      // Aviso apenas em desenvolvimento
+      if (import.meta.env.DEV) {
+        console.warn("Firebase Auth não está configurado");
+      }
       setLoading(false);
       return;
     }
